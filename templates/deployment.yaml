@@ -1,8 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.appName }}
-  namespace: {{ .Values.namespace }}
+  name: {{ .Values.appName }}-deployment
   labels:
     app: {{ .Values.appName }}
 spec:
@@ -10,25 +9,14 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.appName }}
-      tier: frontend
   template:
     metadata:
       labels:
         app: {{ .Values.appName }}
-        tier: frontend
-    spec: # Pod spec
+    spec:
+      serviceAccountName: default
       containers:
-      - name: mycontainer
-        image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
-        ports:
-        - containerPort: 80
-        envFrom:
-        - configMapRef:
-            name: {{ .Values.configmap.name }}
-        resources:
-          requests:
-            memory: "16Mi" 
-            cpu: "50m"    # 50 milli cores (1/20 CPU)
-          limits:
-            memory: "128Mi" # 128 mebibytes 
-            cpu: "100m"
+        - name: {{ .Values.appName }}-app
+          image: {{ .Values.image.name}}:{{ .Values.image.tag}}
+          args:
+            - "-text=apple"
