@@ -11,4 +11,4 @@ image:
 
 hostName: app.rke2.localdomain
 path: /apple
-ingressClassName: nginx
+ingressClassName: nginx-external
